@@ -1,9 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <tchar.h>
+#include <stdio.h>
 #include <Windows.h>
 
-extern "C" __declspec(dllexport) int Information(TCHAR* CurrentYear)
+extern "C" __declspec(dllexport) int Information(TCHAR * CurrentYear)
 {
 	SYSTEMTIME st;
 	GetSystemTime(&st);

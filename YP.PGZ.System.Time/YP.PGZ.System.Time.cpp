@@ -7,7 +7,7 @@
 int ThreadFunc(LPVOID lpParameter)
 {
 	// Загружаем dll библиотеку
-	HINSTANCE hinstLib = LoadLibrary(L"info.dll");
+	HINSTANCE hinstLib = LoadLibraryA("info.dll");
 
 	if (hinstLib == NULL)
 		return EXIT_FAILURE;
@@ -15,7 +15,7 @@ int ThreadFunc(LPVOID lpParameter)
 	// Создаем тип данных указателя на функцию
 	typedef int(*ImportFunction)(TCHAR*);
 	// Создаем переменную этого типа
-	ImportFunction DLLInfo; 
+	ImportFunction DLLInfo;
 	// Присваиваем ей функцию
 	DLLInfo = (ImportFunction)GetProcAddress(hinstLib, "Information");
 	// Вызываем функцию
@@ -37,6 +37,7 @@ int WINAPI WinMain(HINSTANCE InstanceDescriptor, HINSTANCE PrevInstanceDescripto
 		FF_DECORATIVE, "CustomFont"
 	);
 
+
 	// Инициализируем окно приложения
 	WNDCLASS MainClass = InitWindowClass((HBRUSH)COLOR_WINDOW,
 		LoadCursor(NULL, IDC_ARROW),							  // Загружаем курсор, используемый в приложении
@@ -52,7 +53,7 @@ int WINAPI WinMain(HINSTANCE InstanceDescriptor, HINSTANCE PrevInstanceDescripto
 	MSG Message{};
 
 	// Создаем окно
-	CreateWindow(ClassName, NameProg, WS_OVERLAPPEDWINDOW | WS_VISIBLE, 600, 400, 500, 270, NULL, NULL, NULL, NULL);
+	CreateWindowW(ClassName, NameProg, WS_OVERLAPPEDWINDOW | WS_VISIBLE, 600, 400, 500, 270, NULL, NULL, NULL, NULL);
 
 	// Цикл обработки сообщений
 	while (GetMessage(&Message, NULL, NULL, NULL))
@@ -71,19 +72,15 @@ WNDCLASS InitWindowClass(HBRUSH BackgroundColor,
 	LPCWSTR ClassName,
 	WNDPROC Procedure)
 {
-	return WNDCLASS
-	{
-		{},
-		Procedure,
-		{},
-		{},
-		InstanceDescriptor,
-		Icon,
-		Cursor,
-		BackgroundColor,
-		{},
-		ClassName,
-	};
+	WNDCLASS WND{};
+	WND.lpfnWndProc = Procedure;
+	WND.hInstance = InstanceDescriptor;
+	WND.hIcon = Icon;
+	WND.hCursor = Cursor;
+	WND.hbrBackground = BackgroundColor;
+	WND.lpszClassName = ClassName;
+
+	return WND;
 }
 
 LRESULT CALLBACK MainProcedure(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
@@ -91,7 +88,7 @@ LRESULT CALLBACK MainProcedure(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	// Обработка сообщений
 	switch (msg)
 	{
-	// Обработка команд
+		// Обработка команд
 	case WM_COMMAND:
 
 		switch (wp)
@@ -105,7 +102,7 @@ LRESULT CALLBACK MainProcedure(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		default: break;
 		}
 		break;
-	// Создание окна
+		// Создание окна
 	case WM_CREATE:
 		DWORD StreamID;
 		// Создание дочернего потока
@@ -121,7 +118,7 @@ LRESULT CALLBACK MainProcedure(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		AddWidgets(hwnd);
 
 		break;
-	// Закрытие окна
+		// Закрытие окна
 	case WM_DESTROY:
 		PostQuitMessage(EXIT_SUCCESS);
 		break;
@@ -134,14 +131,14 @@ LRESULT CALLBACK MainProcedure(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 }
 
 void AddMenues(HWND hwnd)
-{	
+{
 	// Создание меню
 	HMENU RootMenu = CreateMenu();
 	HMENU SubMenu = CreateMenu();
 
 	// Встройка SubMenu в RootMenu
-	AppendMenu(RootMenu, MF_POPUP, (UINT_PTR)SubMenu, L"File");
-	AppendMenu(SubMenu, MF_STRING, OnExit, L"Exit");
+	AppendMenuA(RootMenu, MF_POPUP, (UINT_PTR)SubMenu, "File");
+	AppendMenuA(SubMenu, MF_STRING, OnExit, "Exit");
 
 	// Установка меню в окно
 	SetMenu(hwnd, RootMenu);

@@ -3,11 +3,11 @@
 #define OnExit					1
 #define OnClikedButton			2
 
-const static auto NameProg = L"ИР Управление ресурсами в вычислительных системах";
-const static auto ClassName = L"PGZ.V18";
+LPCWSTR NameProg = L"Individual Work on URVS";
+LPCWSTR ClassName = L"PGZ.V18";
 
-const static auto Author = "Автор";
-const static auto AboutAuthor = "Работу выполнил: Cальников Дмитрий Даниилович ПМ-04.\nВариант: 18";
+const static auto Author = "Author";
+const static auto AboutAuthor = "The work was performed by: Salnikov Dmitry Daniilovich PM-04.\nOption 18";
 
 static TCHAR CurrentYear[50]{};
 
